@@ -3,6 +3,28 @@ package vkexport;
 import java.nio.charset.Charset;
 import java.util.Objects;
 
+/**
+ * Hilfsklasse zur Konvertierung von DOS-Strings (wie in Clipper-DBFs verwendet)
+ * in Integer-Recordnummern.
+ * <p>
+ * Die Implementierung basiert auf den Clipper-Prozeduren:
+ * <ul>
+ *     <li><b>convertRecnoToInteger(char)</b>: verarbeitet 2- oder 3-stellige Zeichenketten</li>
+ *     <li><b>convert2RecnoToInteger(char)</b>: verarbeitet nur 2-stellige Zeichenketten</li>
+ * </ul>
+ *
+ * <h3>Encoding-Hinweis</h3>
+ * Clipper/ASC() liefert den Bytewert gemäß DOS-Codepage (0–255).
+ * In Java müssen Strings daher in das gleiche Charset konvertiert werden,
+ * typischerweise <code>Cp850</code> (DACH) oder <code>IBM437</code> (US-DOS).
+ *
+ * <h3>Beispiel</h3>
+ * <pre>{@code
+ * Integer value1 = RecnoCodec.convertRecnoToInteger("ABC");        // 3 Zeichen
+ * Integer value2 = RecnoCodec.convertRecnoToInteger("AB");         // 2 Zeichen
+ * Integer value3 = RecnoCodec.convert2RecnoToInteger("AB");        // nur 2 Zeichen
+ * }</pre>
+ */
 public final class RecnoCodec {
 
     // Typische DOS Codepage, ggf. anpassen
@@ -10,11 +32,11 @@ public final class RecnoCodec {
 
     private RecnoCodec() {}
 
-    public static Integer convertRecnoToLong(final String s) {
-        return convertRecnoToLong(s, DEFAULT_DOS_CHARSET);
+    public static Integer convertRecnoToInteger(final String s) {
+        return convertRecnoToInteger(s, DEFAULT_DOS_CHARSET);
     }
 
-    public static Integer convertRecnoToLong(final String s, final Charset dosCharset) {
+    public static Integer convertRecnoToInteger(final String s, final Charset dosCharset) {
         if (s == null || s.isEmpty()) {
             return null;
         }
@@ -43,14 +65,14 @@ public final class RecnoCodec {
     }
 
     /**
-     * Exakte Umsetzung von PROCEDURE convert2RecnoToLong(char)
+     * Exakte Umsetzung von PROCEDURE convert2RecnoToInteger(char)
      * Erwartet DOS-Zeichenkette mit 2 Bytes.
      */
-    public static Integer convert2RecnoToLong(final String s) {
-        return convert2RecnoToLong(s, DEFAULT_DOS_CHARSET);
+    public static Integer convert2RecnoToInteger(final String s) {
+        return convert2RecnoToInteger(s, DEFAULT_DOS_CHARSET);
     }
 
-    public static Integer convert2RecnoToLong(final String s, final Charset dosCharset) {
+    public static Integer convert2RecnoToInteger(final String s, final Charset dosCharset) {
         if (s == null || s.isEmpty()) {
             return null;
         }
@@ -59,7 +81,7 @@ public final class RecnoCodec {
         final byte[] bytes = s.getBytes(dosCharset);
 
         if (bytes.length != 2) {
-            System.err.println("WARNING: convert2RecnoToLong requires exactly 2 DOS bytes (got " + bytes.length + ")");
+            System.err.println("WARNING: convert2RecnoToInteger requires exactly 2 DOS bytes (got " + bytes.length + ")");
             return  (bytes[0] & 0xFF) - 32;
         }
 

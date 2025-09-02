@@ -170,8 +170,8 @@ public class InsertBuilder {
             }
             // Base-222 conversion for keys
             final VkExportFull.Conv which = shouldConvert(tableName.toUpperCase(Locale.ROOT), f);
-            if (which == VkExportFull.Conv.CONV)  v = RecnoCodec.convertRecnoToLong(asString(v));
-            if (which == VkExportFull.Conv.CONV2) v = RecnoCodec.convert2RecnoToLong(asString(v));
+            if (which == VkExportFull.Conv.CONV)  v = RecnoCodec.convertRecnoToInteger(asString(v));
+            if (which == VkExportFull.Conv.CONV2) v = RecnoCodec.convert2RecnoToInteger(asString(v));
 
             vals.add(escSql(v));
         }

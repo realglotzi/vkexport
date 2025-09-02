@@ -1,0 +1,8 @@
+vkexport.exe: vkexport.obj
+	rtlink file vkexport.obj output vkexport.exe lib ct
+
+vkexport.obj: vkexport.prg makefile.rmk
+	clipper vkexport.prg /n /b
+
+
+
